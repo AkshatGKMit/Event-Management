@@ -11,7 +11,7 @@ declare interface MainEvent {
     attendeeLimit: number;
     venue: Venue;
     organizer: Attendee;
-    attendees: Attendee[];
+    attendees: Attendees;
 }
 
 type Attendees = Attendee[];
