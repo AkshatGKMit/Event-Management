@@ -8,12 +8,13 @@ type PropTypes = {
     setShowAttendeeModal: (value: boolean) => void;
     setFormFields: (event: (prevEvent: IdOmittedEvent) => IdOmittedEvent) => void;
     attendees: Attendees;
+    isAdding?: boolean;
     isUpdating?: boolean;
     index?: number;
     reload?: () => void;
 };
 
-const AttendeeModal = ({ setShowAttendeeModal, setFormFields, attendees, isUpdating, index, reload }: PropTypes) => {
+const AttendeeModal = ({ setShowAttendeeModal, setFormFields, attendees, isAdding: isAddingFromMain, isUpdating, index, reload }: PropTypes) => {
     const [attendee, setAttendee] = useState({ name: "", email: "" });
     const { attendees: localStorageAttendees, changeAttendees } = useLocalStorage();
 
@@ -51,8 +52,8 @@ const AttendeeModal = ({ setShowAttendeeModal, setFormFields, attendees, isUpdat
         else {
             const restAttendees = attendees.filter((_: Attendee, idx: number) => idx !== index);
             changeAttendees!([...restAttendees, attendee]);
-            reload?.();
         }
+        reload?.();
         closeModal();
     };
 
@@ -107,7 +108,7 @@ const AttendeeModal = ({ setShowAttendeeModal, setFormFields, attendees, isUpdat
                     </ul>
                 </div>
 
-                {!isUpdating && attendees.length !== 0 && (
+                {!isAddingFromMain && !isUpdating && attendees.length !== 0 && (
                     <>
                         <div className="separator">
                             <div className="line"></div>

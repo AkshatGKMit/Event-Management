@@ -21,7 +21,7 @@ const useLocalStorage = () => {
     };
 
     const saveToStorage = (key: LocalStorageKey, value: string) => {
-        // localStorage.setItem(key, value);
+        localStorage.setItem(key, value);
     };
 
     function getFromStorage<T>(key: LocalStorageKey): T | undefined {

@@ -84,13 +84,22 @@ const AddEditEvent = () => {
 
     //* Handle selection of organizer
     const handleOnChangeSelection = (ev: ChangeEvent<HTMLSelectElement>) => {
-        const selectedEmail = ev.target.value;
-        const selectedAttendee = attendeesList.find(({ email }: Attendee) => email === selectedEmail);
+        const { name, value } = ev.target;
+        console.log(ev.target.value);
 
-        if (selectedAttendee) {
+        if (name === "organizer") {
+            const selectedAttendee = attendeesList.find(({ email }: Attendee) => email === value);
+
+            if (selectedAttendee) {
+                setFormFields((prev) => ({
+                    ...prev,
+                    organizer: selectedAttendee,
+                }));
+            }
+        } else {
             setFormFields((prev) => ({
                 ...prev,
-                organizer: selectedAttendee,
+                [name]: value,
             }));
         }
     };

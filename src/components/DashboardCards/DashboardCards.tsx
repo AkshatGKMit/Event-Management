@@ -1,17 +1,24 @@
-import { MouseEvent, useContext } from "react";
+import { MouseEvent, useContext, useState } from "react";
 import DashboardContext from "../../contexts/DashboardContext";
 import { useNavigate } from "react-router-dom";
 import "./DashboardCards.scss";
 import SummaryCard from "../SummaryCard/SummaryCard";
+import AttendeeModal from "../AttendeeModal/AttendeeModal";
 
 const DashboardCards = () => {
     const navigate = useNavigate();
-    const { allEvents: events, allAttendees: attendees, getUpcomingEvents, getCompletedEvents } = useContext(DashboardContext);
+    const { allEvents: events, allAttendees: attendees, getUpcomingEvents, getCompletedEvents, changeActiveCard } = useContext(DashboardContext);
+
+    const [showAttendeeModal, setShowAttendeeModal] = useState(false);
 
     const handleOnCLickAddEvent = (ev: MouseEvent) => {
         ev.preventDefault();
 
         navigate("/add-edit-event");
+    };
+
+    const handleOnClickAddAttendee = () => {
+        setShowAttendeeModal(true);
     };
 
     return (
@@ -36,7 +43,7 @@ const DashboardCards = () => {
                         <label>Add Events</label>
                     </div>
 
-                    <div className="add-card">
+                    <div className="add-card" onClick={handleOnClickAddAttendee}>
                         <div className="padding">
                             <div className="lines">
                                 <div className="hr"></div>
@@ -47,6 +54,17 @@ const DashboardCards = () => {
                     </div>
                 </div>
             </div>
+
+            
+            {showAttendeeModal && (
+                <AttendeeModal
+                    attendees={attendees}
+                    setFormFields={() => {}}
+                    setShowAttendeeModal={setShowAttendeeModal}
+                    reload={() => changeActiveCard(3)}
+                    isAdding
+                />
+            )}
         </section>
     );
 };
