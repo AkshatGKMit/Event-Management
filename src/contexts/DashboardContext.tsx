@@ -58,7 +58,9 @@ export const DashboardContextProvider = ({ children }: ProviderProps) => {
 
     const getCompletedEvents = (): MainEvents => {
         const now = new Date();
-        return allEvents.filter(({ dateTime }: MainEvent) => dateTime <= now);
+        return allEvents.filter(({ dateTime }: MainEvent) => {
+            return new Date(dateTime) <= now;
+        });
     };
 
     const loadActiveCardData = (active: number) => {

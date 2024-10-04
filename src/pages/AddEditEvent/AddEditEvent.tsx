@@ -52,6 +52,7 @@ const AddEditEvent = () => {
             setTimeout(() => {
                 getEventId();
                 setAttendeesList(attendees);
+                setIsLoading(false);
             }, 0);
         });
     }
@@ -137,7 +138,7 @@ const AddEditEvent = () => {
         navigate("/");
     };
 
-    if (isLoading) <Loader />;
+    if (isLoading) return <Loader />;
 
     return (
         <div className="add-edit-event-page">
