@@ -1,0 +1,27 @@
+.display-section {
+
+    .mapping-items {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .mapping-items th,
+    .mapping-items td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: center;
+    }
+
+    .mapping-items thead {
+        background-color: black;
+        color: white;
+    }
+
+    .mapping-items tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    tr {
+        display: table-row;
+    }
+}

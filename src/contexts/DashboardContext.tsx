@@ -1,6 +1,5 @@
 import { ChangeEvent, createContext, ReactNode, useEffect, useState } from "react";
 import useLocalStorage from "../hooks/useLocalStorage";
-import { Attendee, Attendees, DashboardContextInterface, MainEvent, MainEvents } from "../@types/global";
 
 const defaultContextValue: DashboardContextInterface = {
     allAttendees: [],
