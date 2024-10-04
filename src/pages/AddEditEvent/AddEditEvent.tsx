@@ -5,6 +5,7 @@ import { Venue } from "../../enum";
 import AttendeeModal from "../../components/AttendeeModal/AttendeeModal";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import { eventValidation, formattedDateForInput, generateId } from "../../helpers";
+import Loader from "../../components/Loader/Loader";
 
 type ParamsType = { eventId: string };
 
@@ -31,6 +32,7 @@ const AddEditEvent = () => {
     const [formFields, setFormFields] = useState(defaultFormValues);
     const [attendeesList, setAttendeesList] = useState<Attendees>([]);
     const [showAttendeeModal, setShowAttendeeModal] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
     function getEventId() {
         const eventId = Params?.eventId || undefined;
@@ -45,11 +47,27 @@ const AddEditEvent = () => {
         }
     }
 
+    function loadStart() {
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                getEventId();
+                setAttendeesList(attendees);
+            }, 0);
+        });
+    }
+
     //* Set event ID and populate form fields for adding or updating
     useEffect(() => {
-        getEventId();
-        setAttendeesList(attendees);
-    }, []);
+        async function loadAsyncData() {
+            try {
+                await loadStart();
+            } catch (error) {
+                alert("Error loading tasks:" + error);
+            }
+        }
+
+        loadAsyncData();
+    }, [attendees]);
 
     //* Filter available attendees for selection
     const availableAttendees = attendeesList.filter(
@@ -118,6 +136,8 @@ const AddEditEvent = () => {
         handleReset(ev);
         navigate("/");
     };
+
+    if (isLoading) <Loader />;
 
     return (
         <div className="add-edit-event-page">
