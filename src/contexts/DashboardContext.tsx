@@ -12,8 +12,9 @@ const defaultContextValue: DashboardContextInterface = {
     currentEvents: [],
     currentAttendees: [],
     searchFilter: () => {},
-    deleteEvent: () => { },
-    deleteAttendee: () => {}
+    deleteEvent: () => {},
+    deleteAttendee: () => {},
+    isLoading: true,
 };
 
 const DashboardContext = createContext<DashboardContextInterface>(defaultContextValue);
@@ -27,9 +28,26 @@ export const DashboardContextProvider = ({ children }: ProviderProps) => {
     const [currentAttendees, setCurrentAttendees] = useState<Attendees>([]);
     const [activeCard, setActiveCard] = useState(0);
     const [isEventActive, setIsEventActive] = useState(true);
+    const [isLoading, setIsLoading] = useState(true);
+
+    function loadStart() {
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                loadActiveCardData(0);
+            }, 2000);
+        });
+    }
 
     useEffect(() => {
-        changeActiveCard(0);
+        async function loadAsyncData() {
+            try {
+                await loadStart();
+            } catch (error) {
+                alert("Error loading tasks:" + error);
+            }
+        }
+
+        loadAsyncData();
     }, [allEvents]);
 
     const getUpcomingEvents = (): MainEvents => {
@@ -42,7 +60,7 @@ export const DashboardContextProvider = ({ children }: ProviderProps) => {
         return allEvents.filter(({ dateTime }: MainEvent) => dateTime <= now);
     };
 
-    const changeActiveCard = (active: number) => {
+    const loadActiveCardData = (active: number) => {
         setActiveCard(active);
         setIsEventActive(active !== 3);
 
@@ -62,6 +80,8 @@ export const DashboardContextProvider = ({ children }: ProviderProps) => {
             default:
                 break;
         }
+
+        setIsLoading(false);
     };
 
     const searchFilter = (ev: ChangeEvent<HTMLInputElement>) => {
@@ -84,18 +104,18 @@ export const DashboardContextProvider = ({ children }: ProviderProps) => {
                 });
             }
         else {
-            changeActiveCard(activeCard);
+            loadActiveCardData(activeCard);
         }
     };
 
     const deleteEvent = (idx: number) => {
         changeEvents(allEvents.filter((_: MainEvent, index: number) => idx !== index));
-        changeActiveCard(activeCard);
+        loadActiveCardData(activeCard);
     };
 
     const deleteAttendee = (idx: number) => {
         changeAttendees(allAttendees.filter((_: Attendee, index: number) => idx !== index));
-        changeActiveCard(activeCard);
+        loadActiveCardData(activeCard);
     };
 
     const contextValue: DashboardContextInterface = {
@@ -104,13 +124,14 @@ export const DashboardContextProvider = ({ children }: ProviderProps) => {
         getUpcomingEvents,
         getCompletedEvents,
         activeCard,
-        changeActiveCard,
+        changeActiveCard: loadActiveCardData,
         isEventActive,
         currentEvents,
         currentAttendees,
         searchFilter,
         deleteEvent,
-        deleteAttendee
+        deleteAttendee,
+        isLoading,
     };
 
     return <DashboardContext.Provider value={contextValue}>{children}</DashboardContext.Provider>;

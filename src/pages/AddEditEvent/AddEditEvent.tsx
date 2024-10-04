@@ -1,7 +1,7 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "./AddEditEvent.scss";
 import { ChangeEvent, MouseEvent, useEffect, useState } from "react";
-import { LocalStorageKey, Venue } from "../../enum";
+import { Venue } from "../../enum";
 import AttendeeModal from "../../components/AttendeeModal/AttendeeModal";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import { eventValidation, formattedDateForInput, generateId } from "../../helpers";
@@ -22,6 +22,7 @@ const defaultFormValues: IdOmittedEvent = {
 };
 
 const AddEditEvent = () => {
+    const navigate = useNavigate();
     const Params = useParams<ParamsType>();
 
     const { events, attendees, changeEvents } = useLocalStorage();
@@ -115,6 +116,7 @@ const AddEditEvent = () => {
         ]);
 
         handleReset(ev);
+        navigate("/");
     };
 
     return (

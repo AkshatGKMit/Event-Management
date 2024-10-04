@@ -31,4 +31,5 @@ declare interface DashboardContextInterface {
     searchFilter: (ev: ChangeEvent<HTMLInputElement>) => void;
     deleteEvent: (idx: number) => void;
     deleteAttendee: (idx: number) => void;
+    isLoading: boolean
 }

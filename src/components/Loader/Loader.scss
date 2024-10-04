@@ -1,0 +1,31 @@
+.loader-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 1rem;
+    margin: 3rem;
+    font-size: 2rem;
+    font-weight: 900;
+    color: black;
+
+    .loader-icon {
+        height: 6rem;
+        width: 6rem;
+        border: 10px solid black;
+        border-top-color: transparent;
+        border-radius: 10rem;
+        animation: spin 2s linear infinite;
+    }
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
