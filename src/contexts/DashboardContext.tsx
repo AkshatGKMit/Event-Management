@@ -14,6 +14,7 @@ const defaultContextValue: DashboardContextInterface = {
     searchFilter: () => {},
     deleteEvent: () => {},
     deleteAttendee: () => {},
+    changeAttendees: () => {},
     isLoading: true,
 };
 
@@ -34,7 +35,7 @@ export const DashboardContextProvider = ({ children }: ProviderProps) => {
         return new Promise((resolve) => {
             setTimeout(() => {
                 loadActiveCardData(0);
-            }, 2000);
+            }, 0);
         });
     }
 
@@ -132,6 +133,7 @@ export const DashboardContextProvider = ({ children }: ProviderProps) => {
         deleteEvent,
         deleteAttendee,
         isLoading,
+        changeAttendees
     };
 
     return <DashboardContext.Provider value={contextValue}>{children}</DashboardContext.Provider>;

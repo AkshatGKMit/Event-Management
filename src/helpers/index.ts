@@ -53,14 +53,14 @@ export function attendeeValidation(attendees: Attendees, attendee: Attendee): bo
     const { name, email } = attendee;
 
     if (name === "" || email === "") {
-        // TODO: Toast - Name should be there
+        alert("// TODO: Toast - Name should be there");
         return false;
     }
 
     const isEmailPresent = attendees.find(({ email: findingEmail }: Attendee) => findingEmail === email);
 
     if (isEmailPresent) {
-        //TODO: Toast - Email already present
+        alert("//TODO: Toast - Email already present");
         return false;
     }
 

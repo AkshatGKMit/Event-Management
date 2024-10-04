@@ -1,16 +1,26 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import DashboardContext from "../../contexts/DashboardContext";
 import "./EventAttendeeSection.scss";
 import { getDateString, getTimeString } from "../../helpers";
 import { useNavigate } from "react-router-dom";
+import AttendeeModal from "../AttendeeModal/AttendeeModal";
 
 const EventAttendeeSection = () => {
     const navigate = useNavigate();
 
-    const { currentEvents, currentAttendees, isEventActive, searchFilter, deleteEvent, deleteAttendee } = useContext(DashboardContext);
+    const { currentEvents, currentAttendees, isEventActive, searchFilter, deleteEvent, deleteAttendee, allAttendees, changeActiveCard } =
+        useContext(DashboardContext);
+
+    const [showAttendeeModal, setShowAttendeeModal] = useState(false);
+    const [editIdx, setEditIdx] = useState(-1);
 
     const eventTableHeading = ["Date", "Time", "Title", "Organizer", "Venue"];
     const attendeeTableHeading = ["Name", "Email"];
+
+    const onEditClicked = (idx: number) => {
+        setEditIdx(idx);
+        setShowAttendeeModal(true);
+    };
 
     return (
         <section className="display-section">
@@ -64,7 +74,14 @@ const EventAttendeeSection = () => {
                                     <td>{name}</td>
                                     <td>{email}</td>
                                     <td>
-                                        <button type="button">Edit</button>
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                onEditClicked(idx);
+                                            }}
+                                        >
+                                            Edit
+                                        </button>
                                         <button type="button" onClick={() => deleteAttendee(idx)}>
                                             Delete
                                         </button>
@@ -75,6 +92,16 @@ const EventAttendeeSection = () => {
                     </tbody>
                 </table>
             </div>
+            {showAttendeeModal && (
+                <AttendeeModal
+                    attendees={allAttendees}
+                    index={editIdx}
+                    setFormFields={() => {}}
+                    setShowAttendeeModal={setShowAttendeeModal}
+                    reload={() => changeActiveCard(3)}
+                    isUpdating
+                />
+            )}
         </section>
     );
 };
