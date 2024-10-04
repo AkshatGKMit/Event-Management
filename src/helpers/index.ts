@@ -70,7 +70,7 @@ export function attendeeValidation(attendees: Attendees, attendee: Attendee): bo
 export function getDateString(incomingDate: Date): string {
     const date = new Date(incomingDate);
 
-    return `${date.getDate()}/${(date.getMonth() + 1).toString().padStart(2, "0")}/${date.getFullYear()}`;
+    return `${date.getDate().toString().padStart(2, "0")}/${(date.getMonth() + 1).toString().padStart(2, "0")}/${date.getFullYear()}`;
 }
 
 export function getTimeString(incomingDate: Date): string {

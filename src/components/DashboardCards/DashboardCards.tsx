@@ -1,17 +1,17 @@
 import { MouseEvent, useContext } from "react";
 import DashboardContext from "../../contexts/DashboardContext";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./DashboardCards.scss";
 import SummaryCard from "../SummaryCard/SummaryCard";
 
 const DashboardCards = () => {
-    // const navigate = useNavigate()
+    const navigate = useNavigate();
     const { allEvents: events, allAttendees: attendees, getUpcomingEvents, getCompletedEvents } = useContext(DashboardContext);
 
     const handleOnCLickAddEvent = (ev: MouseEvent) => {
         ev.preventDefault();
 
-        // navigate("/add-update-event")
+        navigate("/add-edit-event");
     };
 
     return (

@@ -20,7 +20,7 @@ function App() {
                             </DashboardContextProvider>
                         }
                     />
-                    <Route path="/add-edit-event/:eventId" Component={AddEditEvent} />
+                    <Route path="/add-edit-event/:eventId?" Component={AddEditEvent} />
                     <Route path="*" Component={Page404} />
                 </Routes>
             </BrowserRouter>
