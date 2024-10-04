@@ -27,6 +27,8 @@ declare interface DashboardContextInterface {
     changeActiveCard: (value: number) => void;
     isEventActive: boolean;
     currentEvents: MainEvents;
-    currentAttendees: Attendees
+    currentAttendees: Attendees;
     searchFilter: (ev: ChangeEvent<HTMLInputElement>) => void;
+    deleteEvent: (idx: number) => void;
+    deleteAttendee: (idx: number) => void;
 }

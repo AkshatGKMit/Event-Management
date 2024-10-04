@@ -12,6 +12,8 @@ const defaultContextValue: DashboardContextInterface = {
     currentEvents: [],
     currentAttendees: [],
     searchFilter: () => {},
+    deleteEvent: () => { },
+    deleteAttendee: () => {}
 };
 
 const DashboardContext = createContext<DashboardContextInterface>(defaultContextValue);
@@ -19,7 +21,8 @@ const DashboardContext = createContext<DashboardContextInterface>(defaultContext
 type ProviderProps = { children?: ReactNode };
 
 export const DashboardContextProvider = ({ children }: ProviderProps) => {
-    const { events: allEvents, attendees: allAttendees } = useLocalStorage();
+    const { events: allEvents, attendees: allAttendees, changeEvents, changeAttendees } = useLocalStorage();
+
     const [currentEvents, setCurrentEvents] = useState<MainEvents>([]);
     const [currentAttendees, setCurrentAttendees] = useState<Attendees>([]);
     const [activeCard, setActiveCard] = useState(0);
@@ -85,6 +88,16 @@ export const DashboardContextProvider = ({ children }: ProviderProps) => {
         }
     };
 
+    const deleteEvent = (idx: number) => {
+        changeEvents(allEvents.filter((_: MainEvent, index: number) => idx !== index));
+        changeActiveCard(activeCard);
+    };
+
+    const deleteAttendee = (idx: number) => {
+        changeAttendees(allAttendees.filter((_: Attendee, index: number) => idx !== index));
+        changeActiveCard(activeCard);
+    };
+
     const contextValue: DashboardContextInterface = {
         allEvents,
         allAttendees,
@@ -96,6 +109,8 @@ export const DashboardContextProvider = ({ children }: ProviderProps) => {
         currentEvents,
         currentAttendees,
         searchFilter,
+        deleteEvent,
+        deleteAttendee
     };
 
     return <DashboardContext.Provider value={contextValue}>{children}</DashboardContext.Provider>;

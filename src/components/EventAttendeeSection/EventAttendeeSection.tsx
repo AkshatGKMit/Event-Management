@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 const EventAttendeeSection = () => {
     const navigate = useNavigate();
 
-    const { currentEvents, currentAttendees, isEventActive, searchFilter } = useContext(DashboardContext);
+    const { currentEvents, currentAttendees, isEventActive, searchFilter, deleteEvent, deleteAttendee } = useContext(DashboardContext);
 
     const eventTableHeading = ["Date", "Time", "Title", "Organizer", "Venue"];
     const attendeeTableHeading = ["Name", "Email"];
@@ -50,7 +50,9 @@ const EventAttendeeSection = () => {
                                             <button type="button" onClick={() => navigate(`/add-edit-event/${id}`)}>
                                                 Edit
                                             </button>
-                                            <button type="button">Delete</button>
+                                            <button type="button" onClick={() => deleteEvent(idx)}>
+                                                Delete
+                                            </button>
                                         </td>
                                     </tr>
                                 );
@@ -63,7 +65,9 @@ const EventAttendeeSection = () => {
                                     <td>{email}</td>
                                     <td>
                                         <button type="button">Edit</button>
-                                        <button type="button">Delete</button>
+                                        <button type="button" onClick={() => deleteAttendee(idx)}>
+                                            Delete
+                                        </button>
                                     </td>
                                 </tr>
                             );

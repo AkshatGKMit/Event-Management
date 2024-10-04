@@ -3,7 +3,6 @@ import { createPortal } from "react-dom";
 import { attendeeValidation } from "../../helpers";
 import "./AttendeeModal.scss";
 import useLocalStorage from "../../hooks/useLocalStorage";
-import { LocalStorageKey } from "../../enum";
 
 type PropTypes = {
     setShowAttendeeModal: (value: boolean) => void;
@@ -13,7 +12,7 @@ type PropTypes = {
 
 const AttendeeModal = ({ setShowAttendeeModal, setFormFields, attendees }: PropTypes) => {
     const [attendee, setAttendee] = useState({ name: "", email: "" });
-    const { attendees: localStorageAttendees, saveToStorage } = useLocalStorage();
+    const { attendees: localStorageAttendees, changeAttendees } = useLocalStorage();
 
     const closeModal = () => setShowAttendeeModal(false);
 
@@ -35,7 +34,7 @@ const AttendeeModal = ({ setShowAttendeeModal, setFormFields, attendees }: PropT
             attendees: [...prev.attendees, attendee],
         }));
 
-        saveToStorage(LocalStorageKey.Attendees, JSON.stringify([...localStorageAttendees, attendee]));
+        changeAttendees([...localStorageAttendees, attendee]);
         closeModal();
     };
 

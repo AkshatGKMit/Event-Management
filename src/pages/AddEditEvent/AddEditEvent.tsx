@@ -24,7 +24,7 @@ const defaultFormValues: IdOmittedEvent = {
 const AddEditEvent = () => {
     const Params = useParams<ParamsType>();
 
-    const { events, attendees, saveToStorage } = useLocalStorage();
+    const { events, attendees, changeEvents } = useLocalStorage();
 
     const [eventId, setEventId] = useState<undefined | string>(undefined);
     const [formFields, setFormFields] = useState(defaultFormValues);
@@ -106,16 +106,13 @@ const AddEditEvent = () => {
             return;
         }
 
-        saveToStorage(
-            LocalStorageKey.Events,
-            JSON.stringify([
-                ...events.filter(({ id }: MainEvent) => id !== eventId),
-                {
-                    ...formFields,
-                    id: eventId ?? generateId(events),
-                },
-            ])
-        );
+        changeEvents([
+            ...events.filter(({ id }: MainEvent) => id !== eventId),
+            {
+                ...formFields,
+                id: eventId ?? generateId(events),
+            },
+        ]);
 
         handleReset(ev);
     };
