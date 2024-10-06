@@ -9,6 +9,7 @@ import AddEditEvent from "../AddEditEvent/AddEditEvent";
 function App() {
     return (
         <div className="App">
+            {/* //TODO: Routes in separate file */}
             <BrowserRouter>
                 <Navbar />
                 <Routes>

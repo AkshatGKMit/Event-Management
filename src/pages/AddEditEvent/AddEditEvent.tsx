@@ -7,6 +7,10 @@ import useLocalStorage from "../../hooks/useLocalStorage";
 import { eventValidation, formattedDateForInput, generateId } from "../../helpers";
 import Loader from "../../components/Loader/Loader";
 
+//TODO: Venue should not clash according to event time
+//TODO: Attendee should not clash according to events
+
+
 type ParamsType = { eventId: string };
 
 const defaultFormValues: IdOmittedEvent = {
@@ -40,8 +44,14 @@ const AddEditEvent = () => {
             setEventId(eventId);
 
             const updatingEvent = events.find(({ id }: MainEvent) => eventId === id)!;
-            const { dateTime } = updatingEvent;
-            setFormFields({ ...updatingEvent, dateTime: new Date(dateTime) });
+            console.log(updatingEvent.dateTime);
+
+            if (updatingEvent) {
+                console.log(updatingEvent.dateTime);
+                
+                const { dateTime } = updatingEvent;
+                setFormFields({ ...updatingEvent, dateTime: new Date(dateTime) });
+            }
         } else {
             setFormFields(defaultFormValues);
         }
@@ -53,7 +63,7 @@ const AddEditEvent = () => {
                 getEventId();
                 setAttendeesList(attendees);
                 setIsLoading(false);
-            }, 0);
+            }, 1000);
         });
     }
 

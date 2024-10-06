@@ -108,6 +108,7 @@ const AttendeeModal = ({ setShowAttendeeModal, setFormFields, attendees, isAddin
                     </ul>
                 </div>
 
+                {/* //! - Issue */}
                 {!isAddingFromMain && !isUpdating && attendees.length !== 0 && (
                     <>
                         <div className="separator">

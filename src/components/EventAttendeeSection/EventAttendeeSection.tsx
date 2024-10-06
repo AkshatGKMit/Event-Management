@@ -27,13 +27,15 @@ const EventAttendeeSection = () => {
             <div className="head-wrapper">
                 <div className="heading"></div>
                 <div className="addon-buttons">
-                    <input
-                        type="text"
-                        name=""
-                        className="search-input"
-                        onChange={searchFilter}
-                        placeholder={`Search ${isEventActive ? "Event" : "Attendee"}`}
-                    />
+                    <div className="input-wrapper">
+                        <input
+                            type="text"
+                            name=""
+                            className="search-input"
+                            onChange={searchFilter}
+                            placeholder={`Search ${isEventActive ? "Event" : "Attendee"}`}
+                        />
+                    </div>
                     {/* //TODO: Custom select box for sorting */}
                 </div>
 
@@ -46,6 +48,8 @@ const EventAttendeeSection = () => {
                         </tr>
                     </thead>
                     <tbody>
+                        {/* //TODO: Condition for empty data */}
+                        {/* //! - Issue - No conditions */}
                         {(isEventActive ? currentEvents : currentAttendees).map((item: MainEvent | Attendee, idx: number) => {
                             if (isEventActive && "dateTime" in item) {
                                 const { dateTime, title, organizer, venue, id } = item;
@@ -92,6 +96,8 @@ const EventAttendeeSection = () => {
                     </tbody>
                 </table>
             </div>
+
+            {/* //! - Issue */}
             {showAttendeeModal && (
                 <AttendeeModal
                     attendees={allAttendees}

@@ -35,7 +35,7 @@ export const DashboardContextProvider = ({ children }: ProviderProps) => {
         return new Promise((resolve) => {
             setTimeout(() => {
                 loadActiveCardData(0);
-            }, 0);
+            }, 1000);
         });
     }
 
@@ -88,6 +88,8 @@ export const DashboardContextProvider = ({ children }: ProviderProps) => {
     };
 
     const searchFilter = (ev: ChangeEvent<HTMLInputElement>) => {
+
+        //TODO: Debouncing
         const { value } = ev.target;
 
         if (value)
