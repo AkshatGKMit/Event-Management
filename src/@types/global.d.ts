@@ -17,3 +17,20 @@ declare interface MainEvent {
 type Attendees = Attendee[];
 type MainEvents = MainEvent[];
 type IdOmittedEvent = Omit<MainEvent, "id">;
+
+declare interface DashboardContextInterface {
+    allEvents: MainEvents;
+    allAttendees: Attendees;
+    getUpcomingEvents: () => MainEvents;
+    getCompletedEvents: () => MainEvents;
+    activeCard: number;
+    changeActiveCard: (value: number) => void;
+    isEventActive: boolean;
+    currentEvents: MainEvents;
+    currentAttendees: Attendees;
+    searchFilter: (ev: ChangeEvent<HTMLInputElement>) => void;
+    deleteEvent: (idx: number) => void;
+    deleteAttendee: (idx: number) => void;
+    isLoading: boolean,
+    changeAttendees: (newAttendees: Attendees) => void
+}

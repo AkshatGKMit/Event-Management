@@ -1,10 +1,15 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "./AddEditEvent.scss";
 import { ChangeEvent, MouseEvent, useEffect, useState } from "react";
-import { LocalStorageKey, Venue } from "../../enum";
+import { Venue } from "../../enum";
 import AttendeeModal from "../../components/AttendeeModal/AttendeeModal";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import { eventValidation, formattedDateForInput, generateId } from "../../helpers";
+import Loader from "../../components/Loader/Loader";
+
+//TODO: Venue should not clash according to event time
+//TODO: Attendee should not clash according to events
+
 
 type ParamsType = { eventId: string };
 
@@ -22,14 +27,16 @@ const defaultFormValues: IdOmittedEvent = {
 };
 
 const AddEditEvent = () => {
+    const navigate = useNavigate();
     const Params = useParams<ParamsType>();
 
-    const { events, attendees, saveToStorage } = useLocalStorage();
+    const { events, attendees, changeEvents } = useLocalStorage();
 
     const [eventId, setEventId] = useState<undefined | string>(undefined);
     const [formFields, setFormFields] = useState(defaultFormValues);
     const [attendeesList, setAttendeesList] = useState<Attendees>([]);
     const [showAttendeeModal, setShowAttendeeModal] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
     function getEventId() {
         const eventId = Params?.eventId || undefined;
@@ -37,18 +44,41 @@ const AddEditEvent = () => {
             setEventId(eventId);
 
             const updatingEvent = events.find(({ id }: MainEvent) => eventId === id)!;
-            const { dateTime } = updatingEvent;
-            setFormFields({ ...updatingEvent, dateTime: new Date(dateTime) });
+            console.log(updatingEvent.dateTime);
+
+            if (updatingEvent) {
+                console.log(updatingEvent.dateTime);
+                
+                const { dateTime } = updatingEvent;
+                setFormFields({ ...updatingEvent, dateTime: new Date(dateTime) });
+            }
         } else {
             setFormFields(defaultFormValues);
         }
     }
 
+    function loadStart() {
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                getEventId();
+                setAttendeesList(attendees);
+                setIsLoading(false);
+            }, 1000);
+        });
+    }
+
     //* Set event ID and populate form fields for adding or updating
     useEffect(() => {
-        getEventId();
-        setAttendeesList(attendees);
-    }, []);
+        async function loadAsyncData() {
+            try {
+                await loadStart();
+            } catch (error) {
+                alert("Error loading tasks:" + error);
+            }
+        }
+
+        loadAsyncData();
+    }, [attendees]);
 
     //* Filter available attendees for selection
     const availableAttendees = attendeesList.filter(
@@ -64,13 +94,22 @@ const AddEditEvent = () => {
 
     //* Handle selection of organizer
     const handleOnChangeSelection = (ev: ChangeEvent<HTMLSelectElement>) => {
-        const selectedEmail = ev.target.value;
-        const selectedAttendee = attendeesList.find(({ email }: Attendee) => email === selectedEmail);
+        const { name, value } = ev.target;
+        console.log(ev.target.value);
 
-        if (selectedAttendee) {
+        if (name === "organizer") {
+            const selectedAttendee = attendeesList.find(({ email }: Attendee) => email === value);
+
+            if (selectedAttendee) {
+                setFormFields((prev) => ({
+                    ...prev,
+                    organizer: selectedAttendee,
+                }));
+            }
+        } else {
             setFormFields((prev) => ({
                 ...prev,
-                organizer: selectedAttendee,
+                [name]: value,
             }));
         }
     };
@@ -106,19 +145,19 @@ const AddEditEvent = () => {
             return;
         }
 
-        saveToStorage(
-            LocalStorageKey.Events,
-            JSON.stringify([
-                ...events.filter(({ id }: MainEvent) => id !== eventId),
-                {
-                    ...formFields,
-                    id: eventId ?? generateId(events),
-                },
-            ])
-        );
+        changeEvents([
+            ...events.filter(({ id }: MainEvent) => id !== eventId),
+            {
+                ...formFields,
+                id: eventId ?? generateId(events),
+            },
+        ]);
 
         handleReset(ev);
+        navigate("/");
     };
+
+    if (isLoading) return <Loader />;
 
     return (
         <div className="add-edit-event-page">

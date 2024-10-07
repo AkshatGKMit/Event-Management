@@ -1,19 +1,32 @@
-import { ChangeEvent, MouseEvent, useState } from "react";
+import { ChangeEvent, MouseEvent, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { attendeeValidation } from "../../helpers";
 import "./AttendeeModal.scss";
 import useLocalStorage from "../../hooks/useLocalStorage";
-import { LocalStorageKey } from "../../enum";
 
 type PropTypes = {
     setShowAttendeeModal: (value: boolean) => void;
     setFormFields: (event: (prevEvent: IdOmittedEvent) => IdOmittedEvent) => void;
     attendees: Attendees;
+    isAdding?: boolean;
+    isUpdating?: boolean;
+    index?: number;
+    reload?: () => void;
 };
 
-const AttendeeModal = ({ setShowAttendeeModal, setFormFields, attendees }: PropTypes) => {
+const AttendeeModal = ({ setShowAttendeeModal, setFormFields, attendees, isAdding: isAddingFromMain, isUpdating, index, reload }: PropTypes) => {
     const [attendee, setAttendee] = useState({ name: "", email: "" });
-    const { attendees: localStorageAttendees, saveToStorage } = useLocalStorage();
+    const { attendees: localStorageAttendees, changeAttendees } = useLocalStorage();
+
+    useEffect(() => {
+        if (index !== undefined) {
+            const { name, email } = attendees[index];
+            setAttendee({
+                name: name,
+                email: email,
+            });
+        }
+    }, [isUpdating]);
 
     const closeModal = () => setShowAttendeeModal(false);
 
@@ -35,7 +48,12 @@ const AttendeeModal = ({ setShowAttendeeModal, setFormFields, attendees }: PropT
             attendees: [...prev.attendees, attendee],
         }));
 
-        saveToStorage(LocalStorageKey.Attendees, JSON.stringify([...localStorageAttendees, attendee]));
+        if (!isUpdating) changeAttendees([...localStorageAttendees, attendee]);
+        else {
+            const restAttendees = attendees.filter((_: Attendee, idx: number) => idx !== index);
+            changeAttendees!([...restAttendees, attendee]);
+        }
+        reload?.();
         closeModal();
     };
 
@@ -65,32 +83,33 @@ const AttendeeModal = ({ setShowAttendeeModal, setFormFields, attendees }: PropT
                 </button>
 
                 <div className="add-attendee">
-                    <h2>Add Attendee</h2>
+                    <h2>{isUpdating ? "Update" : "Add"} Attendee</h2>
                     <ul className="attendee-form">
                         <li className="input-wrapper">
                             <label>
                                 Name <span>*</span>
                             </label>
-                            <input type="text" name="name" onChange={handleOnChange} placeholder="Enter name" />
+                            <input type="text" name="name" value={attendee.name} onChange={handleOnChange} placeholder="Enter name" />
                         </li>
                         <li className="input-wrapper">
                             <label>
                                 Email <span>*</span>
                             </label>
-                            <input type="text" name="email" onChange={handleOnChange} placeholder="Enter email" />
+                            <input type="text" name="email" value={attendee.email} onChange={handleOnChange} placeholder="Enter email" />
                         </li>
                         <li className="form-buttons">
                             <button type="button" className="reset-btn" onClick={() => setAttendee({ name: "", email: "" })}>
                                 Reset
                             </button>
                             <button type="button" className="submit-btn" onClick={handleOnClickAdd}>
-                                Add
+                                {isUpdating ? "Update" : "Add"}
                             </button>
                         </li>
                     </ul>
                 </div>
 
-                {attendees.length !== 0 && (
+                {/* //! - Issue */}
+                {!isAddingFromMain && !isUpdating && attendees.length !== 0 && (
                     <>
                         <div className="separator">
                             <div className="line"></div>

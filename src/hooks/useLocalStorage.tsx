@@ -1,11 +1,24 @@
-import { useState } from "react";
-import { LocalStorageKey } from "../enum";
+import { useEffect, useState } from "react";
+import { LocalStorageKey } from "../enum/index";
 
 const useLocalStorage = () => {
-    //TODO: Implement its useEffect when context is ready
-    const [events] = useState<MainEvents>(() => getFromStorage<MainEvents>(LocalStorageKey.Events) ?? []);
-    //TODO: Implement its useEffect when context is ready
-    const [attendees] = useState<Attendees>(() => getFromStorage<Attendees>(LocalStorageKey.Attendees) ?? []);
+    const [events, setEvents] = useState<MainEvents>([]);
+    const [attendees, setAttendees] = useState<Attendees>([]);
+
+    useEffect(() => {
+        setEvents(getFromStorage<MainEvents>(LocalStorageKey.Events) ?? []);
+        setAttendees(getFromStorage<Attendees>(LocalStorageKey.Attendees) ?? []);
+    }, []);
+
+    const changeEvents = (newEvents: MainEvents) => {
+        setEvents(newEvents);
+        saveToStorage(LocalStorageKey.Events, JSON.stringify(newEvents));
+    };
+
+    const changeAttendees = (newAttendees: Attendees) => {
+        setAttendees(newAttendees);
+        saveToStorage(LocalStorageKey.Attendees, JSON.stringify(newAttendees));
+    };
 
     const saveToStorage = (key: LocalStorageKey, value: string) => {
         localStorage.setItem(key, value);
@@ -17,7 +30,7 @@ const useLocalStorage = () => {
         return undefined;
     }
 
-    return { events, attendees, saveToStorage };
+    return { events, attendees, changeEvents, changeAttendees };
 };
 
 export default useLocalStorage;
